@@ -11,7 +11,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DeviceNotFoundException.class)
     public ResponseEntity<String> handleDeviceNotFoundException(DeviceNotFoundException e) {
         return ResponseEntity
-                .status(e.getStatus())
+                .status(HttpStatus.NOT_FOUND)
                 .body(e.getMessage());
     }
 }

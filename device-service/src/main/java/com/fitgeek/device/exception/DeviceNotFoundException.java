@@ -6,11 +6,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 public class DeviceNotFoundException extends RuntimeException {
 
-    private final HttpStatus status;
-
-    public DeviceNotFoundException(HttpStatus status, String message) {
+    public DeviceNotFoundException(String message) {
         super(message);
-        this.status = status;
     }
 
 }
