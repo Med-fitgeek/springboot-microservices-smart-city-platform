@@ -21,3 +21,6 @@ spring:
 
   flyway:
     enabled: true
+
+  kafka:
+    bootstrap-servers: kafka:9092
