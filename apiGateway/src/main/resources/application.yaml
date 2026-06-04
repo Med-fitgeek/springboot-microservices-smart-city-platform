@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   application:
@@ -7,8 +7,16 @@ spring:
 
   cloud:
     gateway:
-      routes:
-        -id: device-service
-        url: https://localhost:8080
-        predicates:
-          -Path=/api/devices/**
+      server:
+        webflux:
+          routes:
+            -id: device-service
+            url: http://device-service:8082
+            predicates:
+                - Path=/api/devices/**
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/smart-city
