@@ -1,3 +1,17 @@
 spring:
   application:
     name: device-service
+
+  datasource:
+    url: jdbc:postgresql://postgres-device:5432/device_db
+    username: device
+    password: device
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+    open-in-view: false
+
+  flyway:
+    enabled: true
