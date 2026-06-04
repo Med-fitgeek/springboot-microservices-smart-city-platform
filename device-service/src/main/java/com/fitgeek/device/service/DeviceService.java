@@ -10,4 +10,5 @@ public interface DeviceService {
 
     DeviceResponse register(CreateDeviceRequest request);
     DeviceResponse getDeviceById(UUID id);
+    DeviceResponse deactivateDevice(UUID id);
 }

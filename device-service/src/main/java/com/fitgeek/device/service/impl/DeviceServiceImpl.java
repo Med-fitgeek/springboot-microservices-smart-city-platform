@@ -46,8 +46,19 @@ public class DeviceServiceImpl implements DeviceService {
     @Transactional()
     public DeviceResponse getDeviceById(UUID id) {
         Device device = repository.findById(id)
-                .orElseThrow(() -> new DeviceNotFoundException(HttpStatus.NOT_FOUND, "Device not found"));
+                .orElseThrow(() -> new DeviceNotFoundException("Device not found"));
 
         return mapper.toResponse(device);
+    }
+
+    @Override
+    public DeviceResponse deactivateDevice(UUID id) {
+
+        Device device = repository.findById(id)
+                .orElseThrow(() -> new DeviceNotFoundException("Device not found"));
+
+        device.setStatus(DeviceStatus.INACTIVE);
+        Device savedDevice = repository.save(device);
+        return mapper.toResponse(savedDevice);
     }
 }
