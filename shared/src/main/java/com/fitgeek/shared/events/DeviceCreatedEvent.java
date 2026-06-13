@@ -1,4 +1,4 @@
-package com.fitgeek.device.messaging.producer;
+package com.fitgeek.shared.events;
 
 import java.time.Instant;
 import java.util.UUID;
