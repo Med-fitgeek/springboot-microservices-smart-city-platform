@@ -22,9 +22,8 @@ import java.util.UUID;
 public class DeviceController {
 
     private final DeviceService service;
-    private final DeviceMapper mapper;
 
-    @PostMapping
+    @PostMapping({"", "/"})
     @PreAuthorize("hasRole('CITY_ADMIN') or hasRole('TECHNICIAN')")
     public ResponseEntity<DeviceResponse> create(
             @Valid @RequestBody CreateDeviceRequest request) {
