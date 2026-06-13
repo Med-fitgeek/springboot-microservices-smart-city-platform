@@ -3,12 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.14</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<groupId>com.fitgeek</groupId>
+		<artifactId>smart-city-platform</artifactId>
+		<version>1.0.0</version>
 	</parent>
-	<groupId>com.fitgeek</groupId>
+
 	<artifactId>device-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name/>
@@ -85,6 +84,11 @@
 		<dependency>
 			<groupId>org.springframework.kafka</groupId>
 			<artifactId>spring-kafka</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.fitgeek</groupId>
+			<artifactId>shared</artifactId>
+			<version>1.0.0</version>
 		</dependency>
 	</dependencies>
 

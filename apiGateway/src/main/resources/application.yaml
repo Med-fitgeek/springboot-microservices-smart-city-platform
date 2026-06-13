@@ -11,7 +11,7 @@ spring:
         webflux:
           routes:
             -id: device-service
-            url: http://device-service:8082
+            url: http://localhost:8082
             predicates:
                 - Path=/api/devices/**
 
@@ -19,4 +19,4 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://keycloak:8080/realms/smart-city
+          issuer-uri: http://localhost:8080/realms/smart-city

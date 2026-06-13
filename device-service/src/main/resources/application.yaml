@@ -1,11 +1,14 @@
+server:
+  port: 8082
+
 spring:
   application:
     name: device-service
 
   datasource:
-    url: jdbc:postgresql://postgres-device:5432/device_db
-    username: device
-    password: device
+    url: jdbc:postgresql://localhost:5432/device_db
+    username: postgres
+    password: 1331
 
   security:
     oauth2:
