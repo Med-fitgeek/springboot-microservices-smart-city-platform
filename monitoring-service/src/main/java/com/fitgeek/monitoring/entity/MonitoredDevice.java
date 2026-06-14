@@ -10,10 +10,10 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "device_monitoring")
+@Table(name = "monitoring_devices")
 @Getter
 @Setter
-public class DeviceMonitoring {
+public class MonitoredDevice {
 
     @Id
     private UUID id;
