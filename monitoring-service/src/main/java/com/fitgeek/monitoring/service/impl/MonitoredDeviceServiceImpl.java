@@ -4,23 +4,21 @@ import com.fitgeek.monitoring.dto.MonitoredDeviceResponse;
 import com.fitgeek.monitoring.entity.MonitoredDevice;
 import com.fitgeek.monitoring.exception.DeviceNotFoundException;
 import com.fitgeek.monitoring.mapper.MonitoredDeviceMapper;
-import com.fitgeek.monitoring.repository.DeviceMonitoringRepository;
+import com.fitgeek.monitoring.repository.MonitoredDeviceRepository;
 import com.fitgeek.monitoring.service.MonitoredDeviceService;
 import com.fitgeek.shared.events.DeviceCreatedEvent;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class MonitoredDeviceServiceImpl implements MonitoredDeviceService {
 
-    private final DeviceMonitoringRepository repository;
+    private final MonitoredDeviceRepository repository;
     private final MonitoredDeviceMapper mapper;
 
     @Override
@@ -28,7 +26,7 @@ public class MonitoredDeviceServiceImpl implements MonitoredDeviceService {
     getMonitoredDevices(Pageable pageable) {
 
         return repository.findAll(pageable)
-                .map(mapper::toDto);
+                .map(mapper::toResponse);
     }
 
     @Override
@@ -39,7 +37,7 @@ public class MonitoredDeviceServiceImpl implements MonitoredDeviceService {
                         new DeviceNotFoundException(
                                 "Monitored device not found with id: " + id));
 
-        return mapper.toDto(device);
+        return mapper.toResponse(device);
     }
 
     @Override
@@ -53,12 +51,12 @@ public class MonitoredDeviceServiceImpl implements MonitoredDeviceService {
         }
 
         MonitoredDevice monitoredDevice =
-                new MonitoredDevice();
-
-        monitoredDevice.setId(UUID.randomUUID());
-        monitoredDevice.setDeviceId(event.deviceId());
-        monitoredDevice.setStatus("ONLINE");
-        monitoredDevice.setCreatedAt(event.occurredAt());
+                MonitoredDevice.builder()
+                        .id(UUID.randomUUID())
+                        .deviceId(event.deviceId())
+                        .status("ONLINE")
+                        .createdAt(event.occurredAt())
+                        .build();
 
         repository.save(monitoredDevice);
     }

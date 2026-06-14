@@ -1,6 +1,6 @@
 package com.fitgeek.device.dto;
 
-import com.fitgeek.device.entity.DeviceType;
+import com.fitgeek.device.entity.enums.DeviceType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 

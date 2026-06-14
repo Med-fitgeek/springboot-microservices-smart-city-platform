@@ -1,5 +1,7 @@
 package com.fitgeek.device.entity;
 
+import com.fitgeek.device.entity.enums.DeviceStatus;
+import com.fitgeek.device.entity.enums.DeviceType;
 import jakarta.persistence.*;
 import lombok.*;
 

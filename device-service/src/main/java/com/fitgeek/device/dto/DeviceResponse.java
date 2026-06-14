@@ -1,10 +1,7 @@
 package com.fitgeek.device.dto;
 
-import com.fitgeek.device.entity.DeviceStatus;
-import com.fitgeek.device.entity.DeviceType;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import com.fitgeek.device.entity.enums.DeviceStatus;
+import com.fitgeek.device.entity.enums.DeviceType;
 
 import java.time.Instant;
 import java.util.UUID;

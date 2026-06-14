@@ -23,18 +23,15 @@ public class MonitoredDeviceController {
     private final MonitoredDeviceService service;
 
     @GetMapping
-    public ResponseEntity<Page<MonitoredDeviceResponse>>
-    getDevices(
-            @PageableDefault(size = 20)
-            Pageable pageable) {
+    public ResponseEntity<Page<MonitoredDeviceResponse>> getDevices(
+            @PageableDefault(size = 20) Pageable pageable) {
 
         return ResponseEntity.ok(
                 service.getMonitoredDevices(pageable));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MonitoredDeviceResponse>
-    getDevice(@PathVariable UUID id) {
+    public ResponseEntity<MonitoredDeviceResponse> getDevice(@PathVariable UUID id) {
 
         return ResponseEntity.ok(
                 service.getMonitoredDeviceById(id));

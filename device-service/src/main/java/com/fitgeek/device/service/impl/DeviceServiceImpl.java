@@ -3,7 +3,7 @@ package com.fitgeek.device.service.impl;
 import com.fitgeek.device.dto.CreateDeviceRequest;
 import com.fitgeek.device.dto.DeviceResponse;
 import com.fitgeek.device.entity.Device;
-import com.fitgeek.device.entity.DeviceStatus;
+import com.fitgeek.device.entity.enums.DeviceStatus;
 import com.fitgeek.device.exception.DeviceNotFoundException;
 import com.fitgeek.device.mapper.DeviceMapper;
 import com.fitgeek.device.messaging.producer.DeviceEventProducer;
@@ -12,8 +12,6 @@ import com.fitgeek.device.service.DeviceService;
 import com.fitgeek.shared.events.DeviceCreatedEvent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

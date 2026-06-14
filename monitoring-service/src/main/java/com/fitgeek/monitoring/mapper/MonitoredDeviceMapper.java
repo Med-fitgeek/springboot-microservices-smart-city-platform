@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MonitoredDeviceMapper {
 
-    public MonitoredDeviceResponse toDto(MonitoredDevice monitoredDevice) {
+    public MonitoredDeviceResponse toResponse(MonitoredDevice monitoredDevice) {
 
         return new MonitoredDeviceResponse(
                 monitoredDevice.getId(),

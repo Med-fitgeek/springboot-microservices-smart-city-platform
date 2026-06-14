@@ -1,4 +1,4 @@
-package com.fitgeek.device.entity;
+package com.fitgeek.device.entity.enums;
 
 public enum DeviceStatus {
 
