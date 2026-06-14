@@ -11,11 +11,12 @@ spring:
     password: device
 
   kafka:
-
     bootstrap-servers: kafka:9092
-
     consumer:
-
       group-id: monitoring-group
-
       auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "com.fitgeek.shared.events"
+        spring.json.value.default.type: "com.fitgeek.shared.events.DeviceCreatedEvent"
