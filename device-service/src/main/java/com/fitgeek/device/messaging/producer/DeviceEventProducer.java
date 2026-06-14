@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class DeviceEventProducer {
 
-    private final KafkaTemplate<String, Object> kafkaTemplate;
+    private final KafkaTemplate<String, DeviceCreatedEvent> kafkaTemplate;
 
-    public DeviceEventProducer(KafkaTemplate<String, Object> kafkaTemplate) {
+    public DeviceEventProducer(KafkaTemplate<String, DeviceCreatedEvent> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
