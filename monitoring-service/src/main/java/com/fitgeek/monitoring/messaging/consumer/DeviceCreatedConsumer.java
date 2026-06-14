@@ -1,9 +1,11 @@
 package com.fitgeek.monitoring.messaging.consumer;
 
-import com.fitgeek.monitoring.entity.DeviceMonitoring;
+import com.fitgeek.monitoring.entity.MonitoredDevice;
 import com.fitgeek.monitoring.repository.DeviceMonitoringRepository;
+import com.fitgeek.monitoring.service.MonitoredDeviceService;
 import com.fitgeek.shared.events.DeviceCreatedEvent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
@@ -12,29 +14,19 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class DeviceCreatedConsumer {
 
-    private final DeviceMonitoringRepository repository;
+    private final MonitoredDeviceService monitoredDeviceService;
 
     @KafkaListener(
             topics = "device-events",
             groupId = "monitoring-group")
-    public void consume(
-            DeviceCreatedEvent event) {
+    public void consume(DeviceCreatedEvent event) {
 
-        DeviceMonitoring monitoring =
-                new DeviceMonitoring();
-
-        monitoring.setId(UUID.randomUUID());
-
-        monitoring.setDeviceId(
+        log.info("Received DeviceCreatedEvent for device {}",
                 event.deviceId());
 
-        monitoring.setStatus("ONLINE");
-
-        monitoring.setCreatedAt(
-                Instant.now());
-
-        repository.save(monitoring);
+        monitoredDeviceService.handleDeviceCreated(event);
     }
 }
