@@ -3,9 +3,9 @@ services:
   postgres-device:
     image: postgres:16
     environment:
-      POSTGRES_DB: device_db
-      POSTGRES_USER: device
-      POSTGRES_PASSWORD: device
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
       - "5432:5432"
     healthcheck:
@@ -41,8 +41,8 @@ services:
     image: quay.io/keycloak/keycloak:latest
     command: start-dev
     environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: keycloak
-      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
     ports:
       - "8080:8080"
 

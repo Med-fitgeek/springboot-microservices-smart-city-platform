@@ -7,8 +7,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://postgres-device:5432/device_db
-    username: device
-    password: device
+    username: ${POSTGRES_USER}
+    password: ${POSTGRES_PASSWORD}
 
   security:
     oauth2:
