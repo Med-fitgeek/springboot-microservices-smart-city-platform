@@ -6,8 +6,10 @@ import com.fitgeek.device.entity.Device;
 import com.fitgeek.device.entity.DeviceStatus;
 import com.fitgeek.device.exception.DeviceNotFoundException;
 import com.fitgeek.device.mapper.DeviceMapper;
+import com.fitgeek.device.messaging.producer.DeviceEventProducer;
 import com.fitgeek.device.repository.DeviceRepository;
 import com.fitgeek.device.service.DeviceService;
+import com.fitgeek.shared.events.DeviceCreatedEvent;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
@@ -23,6 +25,7 @@ public class DeviceServiceImpl implements DeviceService {
 
     private final DeviceRepository repository;
     private final DeviceMapper mapper;
+    private final DeviceEventProducer deviceEventProducer;
 
     @Override
     @Transactional
@@ -39,6 +42,17 @@ public class DeviceServiceImpl implements DeviceService {
                 .build();
 
         Device savedDevice = repository.save(device);
+
+        DeviceCreatedEvent event = new DeviceCreatedEvent(
+                UUID.randomUUID(),
+                savedDevice.getId(),
+                savedDevice.getName(),
+                savedDevice.getLocation(),
+                Instant.now()
+        );
+
+        deviceEventProducer.publishDeviceCreated(event);
+
         return mapper.toResponse(savedDevice);
     }
 
