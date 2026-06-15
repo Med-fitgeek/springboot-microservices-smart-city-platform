@@ -10,6 +10,22 @@ spring:
     username: ${POSTGRES_USER}
     password: ${POSTGRES_PASSWORD}
 
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+    open-in-view: false
+
+  flyway:
+    enabled: true
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/smart-city
+          jwk-set-uri: http://keycloak:8080/realms/smart-city/protocol/openid-connect/certs
+
   kafka:
     bootstrap-servers: kafka:9092
     consumer:
@@ -20,3 +36,8 @@ spring:
       properties:
         spring.json.trusted.packages: "com.fitgeek.shared.events"
         spring.json.value.default.type: "com.fitgeek.shared.events.DeviceCreatedEvent"
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG
