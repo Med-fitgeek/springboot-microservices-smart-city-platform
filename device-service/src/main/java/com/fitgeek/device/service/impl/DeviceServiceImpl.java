@@ -45,7 +45,7 @@ public class DeviceServiceImpl implements DeviceService {
                 UUID.randomUUID(),
                 savedDevice.getId(),
                 savedDevice.getName(),
-                savedDevice.getLocation(),
+                savedDevice.getType().toString(),
                 Instant.now()
         );
 
