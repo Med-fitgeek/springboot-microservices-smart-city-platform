@@ -1,19 +1,70 @@
 services:
 
+  # ---------------------------------------------------------------------
+  # Bases de données — une instance Postgres dédiée par service
+  # (vraie isolation de persistance, conforme à l'architecture annoncée)
+  # ---------------------------------------------------------------------
+
   postgres-device:
     image: postgres:16
+    container_name: postgres-device
     environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${DEVICE_DB_NAME}
+      POSTGRES_USER: ${DEVICE_DB_USER}
+      POSTGRES_PASSWORD: ${DEVICE_DB_PASSWORD}
+    volumes:
+      - postgres-device-data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    networks:
+      - smart-city-net
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U device -d device_db" ]
+      test: ["CMD-SHELL", "pg_isready -U ${DEVICE_DB_USER} -d ${DEVICE_DB_NAME}"]
       interval: 5s
       timeout: 5s
       retries: 10
 
+  postgres-monitoring:
+    image: postgres:16
+    container_name: postgres-monitoring
+    environment:
+      POSTGRES_DB: ${MONITORING_DB_NAME}
+      POSTGRES_USER: ${MONITORING_DB_USER}
+      POSTGRES_PASSWORD: ${MONITORING_DB_PASSWORD}
+    volumes:
+      - postgres-monitoring-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - smart-city-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${MONITORING_DB_USER} -d ${MONITORING_DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres-alert:
+    image: postgres:16
+    container_name: postgres-alert
+    environment:
+      POSTGRES_DB: ${ALERT_DB_NAME}
+      POSTGRES_USER: ${ALERT_DB_USER}
+      POSTGRES_PASSWORD: ${ALERT_DB_PASSWORD}
+    volumes:
+      - postgres-alert-data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    networks:
+      - smart-city-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${ALERT_DB_USER} -d ${ALERT_DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ---------------------------------------------------------------------
+  # Kafka (KRaft, broker unique — suffisant pour le dev local)
+  # ---------------------------------------------------------------------
 
   kafka:
     image: apache/kafka:latest
@@ -24,61 +75,165 @@ services:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
-
       KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
-
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
-
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    networks:
+      - smart-city-net
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-broker-api-versions.sh --bootstrap-server localhost:9092"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 20s
+
+  # ---------------------------------------------------------------------
+  # Keycloak
+  # ---------------------------------------------------------------------
 
   keycloak:
     image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
     command: start-dev
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: ${KC_BOOTSTRAP_ADMIN_USERNAME}
       KC_BOOTSTRAP_ADMIN_PASSWORD: ${KC_BOOTSTRAP_ADMIN_PASSWORD}
+    volumes:
+      - keycloak-data:/opt/keycloak/data
     ports:
       - "8080:8080"
+    networks:
+      - smart-city-net
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # ---------------------------------------------------------------------
+  # Services applicatifs
+  # ---------------------------------------------------------------------
 
   gateway-service:
-    environment:
-      SPRING_PROFILES_ACTIVE: docker
     build:
       context: .
       dockerfile: apiGateway/Dockerfile
-
-    ports:
-      - "8081:8081"
-
-  device-service:
+    container_name: gateway-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
+    ports:
+      - "8081:8081"
+    networks:
+      - smart-city-net
+    depends_on:
+      keycloak:
+        condition: service_healthy
+      device-service:
+        condition: service_healthy
+      monitoring-service:
+        condition: service_healthy
+      alert-service:
+        condition: service_healthy
+
+  device-service:
     build:
       context: .
       dockerfile: device-service/Dockerfile
-    ports:
-      - "8082:8082"
-
-  monitoring-service:
+    container_name: device-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      DEVICE_DB_NAME: ${DEVICE_DB_NAME}
+      DEVICE_DB_USER: ${DEVICE_DB_USER}
+      DEVICE_DB_PASSWORD: ${DEVICE_DB_PASSWORD}
+    ports:
+      - "8082:8082"
+    networks:
+      - smart-city-net
+    depends_on:
+      postgres-device:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8082/actuator/health | grep -q '\"status\":\"UP\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  monitoring-service:
     build:
       context: .
       dockerfile: monitoring-service/Dockerfile
-    ports:
-      - "8083:8083"
-
-  alert-service:
+    container_name: monitoring-service
     environment:
       SPRING_PROFILES_ACTIVE: docker
+      MONITORING_DB_NAME: ${MONITORING_DB_NAME}
+      MONITORING_DB_USER: ${MONITORING_DB_USER}
+      MONITORING_DB_PASSWORD: ${MONITORING_DB_PASSWORD}
+    ports:
+      - "8083:8083"
+    networks:
+      - smart-city-net
+    depends_on:
+      postgres-monitoring:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8083/actuator/health | grep -q '\"status\":\"UP\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  alert-service:
     build:
       context: .
       dockerfile: alert-service/Dockerfile
+    container_name: alert-service
+    environment:
+      SPRING_PROFILES_ACTIVE: docker
+      ALERT_DB_NAME: ${ALERT_DB_NAME}
+      ALERT_DB_USER: ${ALERT_DB_USER}
+      ALERT_DB_PASSWORD: ${ALERT_DB_PASSWORD}
     ports:
       - "8084:8084"
+    networks:
+      - smart-city-net
+    depends_on:
+      postgres-alert:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      keycloak:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8084/actuator/health | grep -q '\"status\":\"UP\"'"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+networks:
+  smart-city-net:
+    driver: bridge
+
+volumes:
+  postgres-device-data:
+  postgres-monitoring-data:
+  postgres-alert-data:
+  kafka-data:
+  keycloak-data:
