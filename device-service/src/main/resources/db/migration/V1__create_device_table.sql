@@ -12,16 +12,5 @@ CREATE TABLE devices
 
     firmware_version VARCHAR(100) NOT NULL,
 
-    created_at TIMESTAMP NOT NULL
-);
-
-CREATE TABLE monitoring_devices
-(
-    id UUID PRIMARY KEY,
-
-    deviceId UUID NOT NULL,
-
-    status VARCHAR(50) NOT NULL,
-
-    Instant TIMESTAMP NOT NULL
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
