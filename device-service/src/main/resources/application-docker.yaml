@@ -7,8 +7,8 @@ spring:
 
   datasource:
     url: jdbc:postgresql://postgres-device:5432/device_db
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    username: ${DEVICE_DB_USER}
+    password: ${DEVICE_DB_PASSWORD}
 
   jpa:
     hibernate:

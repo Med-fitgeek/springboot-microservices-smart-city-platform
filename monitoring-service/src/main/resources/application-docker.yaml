@@ -6,9 +6,9 @@ spring:
     name: monitoring-service
 
   datasource:
-    url: jdbc:postgresql://postgres-device:5432/device_db
-    username: ${POSTGRES_USER}
-    password: ${POSTGRES_PASSWORD}
+    url: jdbc:postgresql://postgres-monitoring:5433/device_db
+    username: ${MONITORING_DB_USER}
+    password: ${MONITORING_DB_PASSWORD}
 
   jpa:
     hibernate:
