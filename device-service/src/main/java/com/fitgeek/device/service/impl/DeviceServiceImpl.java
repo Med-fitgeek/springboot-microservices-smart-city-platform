@@ -55,7 +55,7 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
-    @Transactional()
+    @Transactional
     public DeviceResponse getDeviceById(UUID id) {
         Device device = repository.findById(id)
                 .orElseThrow(() -> new DeviceNotFoundException("Device not found"));
@@ -64,6 +64,7 @@ public class DeviceServiceImpl implements DeviceService {
     }
 
     @Override
+    @Transactional
     public DeviceResponse deactivateDevice(UUID id) {
 
         Device device = repository.findById(id)
