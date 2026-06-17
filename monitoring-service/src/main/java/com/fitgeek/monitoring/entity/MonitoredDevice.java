@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 @Entity
-@Table(name = "monitoring_devices")
+@Table(name = "monitored_devices")
 @Getter
 @Setter
 @Builder

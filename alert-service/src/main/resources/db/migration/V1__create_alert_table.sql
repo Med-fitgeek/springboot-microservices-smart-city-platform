@@ -1,4 +1,4 @@
-CREATE TABLE alert
+CREATE TABLE alerts
 (
     id UUID PRIMARY KEY,
 
@@ -6,7 +6,7 @@ CREATE TABLE alert
 
     type VARCHAR(50) NOT NULL,
 
-    alert_severity VARCHAR(50) NOT NULL,
+    severity VARCHAR(50) NOT NULL,
 
     message VARCHAR(255) NOT NULL,
 
