@@ -34,7 +34,9 @@ spring:
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
         spring.json.trusted.packages: "com.fitgeek.shared.events"
-        spring.json.value.default.type: "com.fitgeek.shared.events.DeviceCreatedEvent"
+        spring.json.type.mapping: >-
+          deviceCreated:com.fitgeek.shared.events.DeviceCreatedEvent,
+          sensorReading:com.fitgeek.shared.events.SensorReadingEvent
 
 logging:
   level:
