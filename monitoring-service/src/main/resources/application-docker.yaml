@@ -6,14 +6,13 @@ spring:
     name: monitoring-service
 
   datasource:
-    url: jdbc:postgresql://postgres-monitoring:5433/device_db
+    url: jdbc:postgresql://postgres-monitoring:5432/${MONITORING_DB_NAME}
     username: ${MONITORING_DB_USER}
     password: ${MONITORING_DB_PASSWORD}
 
   jpa:
     hibernate:
       ddl-auto: validate
-
     open-in-view: false
 
   flyway:

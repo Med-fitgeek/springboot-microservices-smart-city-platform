@@ -6,7 +6,7 @@ spring:
     name: alert-service
 
   datasource:
-    url: jdbc:postgresql://postgres-alert:5434/device_db
+    url: jdbc:postgresql://postgres-alert:5432/${ALERT_DB_NAME}
     username: ${ALERT_DB_USER}
     password: ${ALERT_DB_PASSWORD}
 
