@@ -1,4 +1,4 @@
-package com.fitgeek.alert.excpetion;
+package com.fitgeek.alert.exception;
 
 import lombok.Getter;
 

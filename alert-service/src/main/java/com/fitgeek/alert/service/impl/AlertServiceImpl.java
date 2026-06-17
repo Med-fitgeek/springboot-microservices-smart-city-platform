@@ -4,7 +4,7 @@ import com.fitgeek.alert.dto.AlertResponse;
 import com.fitgeek.alert.entity.Alert;
 import com.fitgeek.alert.entity.enums.AlertSeverity;
 import com.fitgeek.alert.entity.enums.AlertType;
-import com.fitgeek.alert.excpetion.AlertNotFoundException;
+import com.fitgeek.alert.exception.AlertNotFoundException;
 import com.fitgeek.alert.mapper.AlertMapper;
 import com.fitgeek.alert.messaging.producer.AlertEventProducer;
 import com.fitgeek.alert.repository.AlertRepository;
