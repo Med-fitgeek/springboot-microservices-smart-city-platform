@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/monitoring/readings")
+@RequestMapping("/api/monitoring/readings")
 @RequiredArgsConstructor
 public class SensorReadingController {
 
