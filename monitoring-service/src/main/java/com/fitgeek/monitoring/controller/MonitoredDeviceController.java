@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/monitoring/devices")
+@RequestMapping("/api/monitoring")
 @RequiredArgsConstructor
 public class MonitoredDeviceController {
 
