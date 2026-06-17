@@ -5,10 +5,10 @@ COPY . .
 
 RUN mvn -pl device-service -am clean package -DskipTests
 
-FROM eclipse-temurin:21-jdk
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
 COPY --from=build /app/device-service/target/*.jar app.jar
 
-EXPOSE 8080
+EXPOSE 8082
 ENTRYPOINT ["java","-jar","app.jar"]
